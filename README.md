@@ -1,2 +1,2 @@
-# Follett-School-Book-Database-Project
-Project created for Follett intermediate school to catalog books stored in bookshelves along the hallway walls 
+# Renaissance-School-Book-Database-Project
+Project created for Renaissance Public School Academy to catalog books stored in bookshelves in the 5th & 6th grade hallway. 
