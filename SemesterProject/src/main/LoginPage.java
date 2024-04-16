@@ -12,11 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 public class LoginPage extends Application {
 
@@ -27,37 +23,31 @@ public class LoginPage extends Application {
         Button collectionsButton = createStyledButton("Collections");
 
         // Lock buttons to the top left and top right respectively
-        HBox leftMenu = new HBox(10, homeButton);
-        HBox rightMenu = new HBox(10, collectionsButton);
+        VBox leftMenu = new VBox(10, homeButton);
+        VBox rightMenu = new VBox(10, collectionsButton);
         leftMenu.setAlignment(Pos.TOP_LEFT);
         rightMenu.setAlignment(Pos.TOP_RIGHT);
 
         // Set padding for the right menu to create a fixed distance from the top right corner
-        leftMenu.setPadding(new Insets(10, 0, 0, 10));
-        rightMenu.setPadding(new Insets(10, 10, 0, 0));
+        leftMenu.setPadding(new Insets(10, 10, 10, 10));
+        rightMenu.setPadding(new Insets(10, 10, 10, 10));
 
         // Create an ImageView with the specified image file
-        //Image logo = new Image("https://renaissancepsa.com/wp-content/uploads/2017/08/rams_logo.png");
-        //ImageView ivLogo = new ImageView(logo);
-        //ivLogo.setPickOnBounds(true); // Make ImageView contain entire image, not just the geometrical shape
-
-        // Create EventHandler for clicking on image
         Image logo = new Image("https://renaissancepsa.com/wp-content/uploads/2017/08/rams_logo.png");
-        ImageView imageView = null;
-            imageView = new ImageView(logo);
-            imageView.setPickOnBounds(true);
-            imageView.setFitWidth(200); // Set desired width
-            imageView.setFitHeight(100); // Set desired height
-            imageView.setOnMouseClicked(e -> {
-                getHostServices().showDocument("https://renaissancepsa.com/");
-            });
+        ImageView imageView = new ImageView(logo);
+        imageView.setPickOnBounds(true);
+        imageView.setFitWidth(200); // Set desired width
+        imageView.setFitHeight(100); // Set desired height
+        imageView.setOnMouseClicked(e -> {
+            getHostServices().showDocument("https://renaissancepsa.com/");
+        });
 
         // Create centered label for login
         Label loginLabel = createStyledLabel("Login");
 
         // Create a VBox to stack the image and the label vertically
-        VBox vbox = new VBox(10, imageView, loginLabel);
-        vbox.setAlignment(Pos.TOP_CENTER);
+        VBox logoBox = new VBox(10, imageView, loginLabel);
+        logoBox.setAlignment(Pos.TOP_CENTER);
 
         // Create labels and text fields for username and password
         Label usernameLabel = createStyledLabel("Username:");
@@ -82,9 +72,16 @@ public class LoginPage extends Application {
         centerForm.setHgap(10);
         centerForm.setAlignment(Pos.CENTER);
 
-        StackPane topPane = new StackPane();
-        topPane.getChildren().addAll(leftMenu, rightMenu, vbox);
-        root.setTop(topPane);
+        // Create grid pane for top menu and logo
+        GridPane topGridPane = new GridPane();
+        topGridPane.setHgap(10);
+        topGridPane.add(leftMenu, 0, 0);
+        topGridPane.add(logoBox, 1, 0);
+        topGridPane.add(rightMenu, 2, 0);
+        topGridPane.setAlignment(Pos.CENTER);
+
+        // Set top menu and logo grid pane to the top of root border pane
+        root.setTop(topGridPane);
         root.setCenter(centerForm);
 
         // Create scene and set it to the stage
