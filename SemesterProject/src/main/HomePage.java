@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -17,22 +18,33 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class HomePage extends Application {
+	private Text text;
+	private Button login;
+	private ComboBox<String> pageSelection;
+	private Image book, logo;
+	private ImageView ivBook, ivLogo;
+	private VBox vbTop;
+	private BorderPane root;
+	private Screen screen;
+	private Rectangle2D bounds;
+	private Scene homeScene;
 
-	public void start(Stage stage) {
-		// Innit parts
-		Text text = new Text("Renaissane Public School Academy\n      5th & 6th Grade Hall Library");
-		Button login, bookshelf;
+	public void start(Stage homeStage) {
+		// Innitialize title
+		text = new Text("Renaissane Public School Academy\n      5th & 6th Grade Hall Library");
+		text.setFont(Font.font("Arial Black", FontWeight.BOLD, 60));
+		text.setFill(Color.DARKBLUE);
 		
 		// Book image for collections button
-		Image book = new Image("https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-book-clipart-vector-png-image_6653535.png");
-		ImageView ivBook = new ImageView(book);
+		book = new Image("https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-book-clipart-vector-png-image_6653535.png");
+		ivBook = new ImageView(book);
 		ivBook.setFitWidth(50);
 		ivBook.setFitHeight(50);
 		ivBook.setPreserveRatio(true);
 		
 		// Renaissance clickable logo
-		Image logo = new Image("https://renaissancepsa.com/wp-content/uploads/2017/08/rams_logo.png");
-		ImageView ivLogo = new ImageView(logo);
+		logo = new Image("https://renaissancepsa.com/wp-content/uploads/2017/08/rams_logo.png");
+		ivLogo = new ImageView(logo);
 		ivLogo.setPickOnBounds(true); // Make ImageView contain entire image, not just the geometrical shape
 
 		// Create EventHandler for clicking on image
@@ -40,60 +52,57 @@ public class HomePage extends Application {
 			getHostServices().showDocument("https://renaissancepsa.com/");
 		});
 
-		// Adjust text
-		text.setFont(Font.font("Arial Black", FontWeight.BOLD, 60));
-		text.setFill(Color.DARKBLUE);
-
 		// Adjust buttons
 		login = new Button("Login");
 		login.setFont(Font.font("Arial Black", FontWeight.BOLD, 60));
 		login.setOnAction(e -> {
-			System.out.println("Login Button Clicked!");
+			System.out.println("Login pressed");
+			Stage loginStage = new Stage();
+			LoginPage loginPage = new LoginPage();
+			loginPage.start(loginStage);
+			homeStage.close();
 		});
 		
-		bookshelf = new Button(); // Create a button without text
-        bookshelf.setOnAction(e -> {
-            System.out.println("Bookshelf Button Clicked!");
+		// Innitialize ComboBox
+		String[] options = {"Home", "Bookshelf", "Games"};
+        pageSelection = new ComboBox<String>();
+        pageSelection.getItems().addAll(options);
+        pageSelection.setValue(options[0]);
+        pageSelection.setStyle("-fx-font-size: 24px; -fx-text-fill: #00008B;");
+
+        // Add event listener to ComboBox
+        pageSelection.setOnAction(e -> {
+            String selectedOption = pageSelection.getValue();
+            System.out.println("Selected Option: " + selectedOption);
+            Stage stage = (Stage) root.getScene().getWindow();
+            SwitchScene.switchScene(selectedOption, stage);
         });
 		
-		// Create HBox & Button for Bookshelf button to have text & image
-		Text bookshelfText = new Text("Collections");
-		bookshelfText.setFont(Font.font("Arial Black", FontWeight.BOLD, 30));
-		
-		HBox bookshelfContent = new HBox(10);
-		bookshelfContent.getChildren().addAll(bookshelfText, ivBook);
-		
-		bookshelf.setGraphic(bookshelfContent);
-
 		// Create Panes
-		VBox vbTop = new VBox(10);
+		vbTop = new VBox(10);
 		vbTop.setAlignment(Pos.CENTER);
 		vbTop.getChildren().addAll(text, ivLogo);
 		
-		BorderPane root = new BorderPane();
+		root = new BorderPane();
 		root.setTop(vbTop);
 		BorderPane.setAlignment(vbTop, Pos.TOP_CENTER);
 		root.setCenter(login);
 		BorderPane.setMargin(login, new Insets(0,0,0,-300));
-		root.setLeft(bookshelf);
-		BorderPane.setMargin(bookshelf, new Insets(20,20,0,20));
+		root.setLeft(pageSelection);
+		BorderPane.setMargin(pageSelection, new Insets(20,20,0,20));
 		
 		// Get primary screen & bounds of the screen for size of scene
-		Screen screen = Screen.getPrimary();
-		Rectangle2D bounds = screen.getVisualBounds();
-		
+		screen = Screen.getPrimary();
+		bounds = screen.getVisualBounds();
 		
 		// Create a scene and place it in the stage
-		Scene scene = new Scene(root);
-		stage.setTitle("Renaissance Public School Academy Library Home Page"); // Set the stage title
-		stage.setScene(scene); // Place the scene in the stage
-		stage.setWidth(bounds.getWidth());
-		stage.setHeight(bounds.getHeight());
-		stage.show(); // Display the stage
-		
-		// Add easter eggs 
-		// Button that just increases counter of button 
-		// Click a button too many times, close the page
+		homeScene = new Scene(root);
+		homeStage.setTitle("Renaissance Public School Academy Library Home Page"); // Set the stage title
+		homeStage.setScene(homeScene); // Place the scene in the stage
+		homeStage.setWidth(bounds.getWidth());
+		homeStage.setHeight(bounds.getHeight());
+		homeStage.show(); // Display the stage
+		homeStage.centerOnScreen();
 	}
 
 	public static void main(String[] args) {
