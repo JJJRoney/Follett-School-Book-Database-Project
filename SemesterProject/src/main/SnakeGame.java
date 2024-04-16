@@ -4,6 +4,8 @@ import java.util.Random;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -29,8 +31,10 @@ public class SnakeGame extends Application {
     static List<Corner> snake = new ArrayList<>();
     static Dir direction = Dir.left;
     static boolean gameOver = false;
+    static boolean gameStart = true;
     static Random rand = new Random();
     private static Button restartButton;
+    private static Button startGame;
 
     public enum Dir {
         left, right, up, down
@@ -73,9 +77,28 @@ public class SnakeGame extends Application {
             });
             restartButton.setVisible(false); // Initially set to invisible
             restartButton.setPrefSize(200, 50); // Set button size
-            StackPane.setAlignment(restartButton, javafx.geometry.Pos.BOTTOM_CENTER); // Set button position
-            StackPane.setMargin(restartButton, new javafx.geometry.Insets(0, 0, 20, 0)); // Set margin
+            StackPane.setAlignment(restartButton, Pos.BOTTOM_CENTER); // Set button position
+            StackPane.setMargin(restartButton, new Insets(0, 0, 20, 0)); // Set margin
             stackPane.getChildren().add(restartButton);
+            
+            startGame = new Button("Start Game");
+            startGame.setFont(Font.font("Arial Black", FontWeight.BOLD, 18));
+            startGame.setOnAction(e -> {
+                snake.clear();
+                direction = Dir.left;
+                gameStart = false;
+                speed = 5;
+                snake.add(new Corner(width / 2, height / 2));
+                snake.add(new Corner(width / 2, height / 2));
+                snake.add(new Corner(width / 2, height / 2));
+                newFood();
+                startGame.setVisible(false);
+            });
+            startGame.setVisible(false); // Initially set to invisible
+            startGame.setPrefSize(200, 50); // Set button size
+            StackPane.setAlignment(startGame, Pos.BOTTOM_CENTER); // Set button position
+            StackPane.setMargin(startGame, new Insets(0, 0, 20, 0)); // Set margin
+            stackPane.getChildren().add(startGame);
 
             new AnimationTimer() {
                 long lastTick = 0;
@@ -97,18 +120,18 @@ public class SnakeGame extends Application {
 
             Scene scene = new Scene(stackPane, width * cornersize, height * cornersize);
 
-            // Setup key controls
+         // Setup key controls
             scene.addEventFilter(KeyEvent.KEY_PRESSED, key -> {
-                if (key.getCode() == KeyCode.W) {
+                if (key.getCode() == KeyCode.W || key.getCode() == KeyCode.UP) {
                     direction = Dir.up;
                 }
-                if (key.getCode() == KeyCode.A) {
+                if (key.getCode() == KeyCode.A || key.getCode() == KeyCode.LEFT) {
                     direction = Dir.left;
                 }
-                if (key.getCode() == KeyCode.S) {
+                if (key.getCode() == KeyCode.S || key.getCode() == KeyCode.DOWN) {
                     direction = Dir.down;
                 }
-                if (key.getCode() == KeyCode.D) {
+                if (key.getCode() == KeyCode.D || key.getCode() == KeyCode.RIGHT) {
                     direction = Dir.right;
                 }
             });
@@ -127,6 +150,10 @@ public class SnakeGame extends Application {
 
     // tick
     public static void tick(GraphicsContext gc) {
+    	if(gameStart) {
+    		startGame.setVisible(true);
+    		return;
+    	}
         if (gameOver) {
             gc.setFill(Color.RED);
             gc.setFont(new Font("", 50));
