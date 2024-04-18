@@ -37,6 +37,9 @@ public class Controller implements Initializable {
 
 	@FXML
 	private Button startButton;
+	
+	@FXML
+	private Button GameLaunchPageButton;
 
 	private int paddleStartSize = 600;
 
@@ -49,24 +52,27 @@ public class Controller implements Initializable {
 
 	// 1 Frame evey 10 millis, which means 100 FPS
 	Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent actionEvent) {
-			movePaddle();
+	    @Override
+	    public void handle(ActionEvent actionEvent) {
+	        movePaddle();
+	        checkCollisionPaddle(paddle);
+	        circle.setLayoutX(circle.getLayoutX() + deltaX);
+	        circle.setLayoutY(circle.getLayoutY() + deltaY);
 
-			checkCollisionPaddle(paddle);
-			circle.setLayoutX(circle.getLayoutX() + deltaX);
-			circle.setLayoutY(circle.getLayoutY() + deltaY);
+	        if (!bricks.isEmpty()) {
+	            bricks.removeIf(brick -> checkCollisionBrick(brick));
+	            if (bricks.isEmpty()) { // Check if all bricks are gone
+	                resetAndNavigateToStart(); // Call the method to reset the game and navigate
+	            }
+	        } else {
+	            resetAndNavigateToStart(); // Call the method to reset the game and navigate
+	        }
 
-			if (!bricks.isEmpty()) {
-				bricks.removeIf(brick -> checkCollisionBrick(brick));
-			} else {
-				timeline.stop();
-			}
-
-			checkCollisionScene(scene);
-			checkCollisionBottomZone();
-		}
+	        checkCollisionScene(scene);
+	        checkCollisionBottomZone();
+	    }
 	}));
+
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -78,6 +84,11 @@ public class Controller implements Initializable {
 	void startGameButtonAction(ActionEvent event) {
 		startButton.setVisible(false);
 		startGame();
+	}
+	@FXML
+	void endGameButtonAction(ActionEvent event) {
+		GameLaunchPageButton.setVisible(false);
+		
 	}
 
 	public void startGame() {
@@ -201,4 +212,26 @@ public class Controller implements Initializable {
 			System.out.println("Game over!");
 		}
 	}
+	
+	public void resetAndNavigateToStart() {
+	    timeline.stop(); // Stop the game animation
+	    bricks.forEach(brick -> scene.getChildren().remove(brick)); // Remove all bricks
+	    bricks.clear(); // Clear the bricks list
+	    startButton.setVisible(true); // Show the start button
+	    GameLaunchPageButton.setVisible(true); // Show the game launch button if hidden
+
+	    // Reset the ball and paddle positions
+	    paddle.setWidth(paddleStartSize);
+	    circle.setLayoutX(300);
+	    circle.setLayoutY(300);
+
+	    // Reset movement deltas
+	    deltaX = -1;
+	    deltaY = -3;
+
+	    // Call the navigation method here
+	    // navigateToStartScreen(); // Uncomment this line if you have a method to handle screen changes
+	    System.out.println("Game reset, navigate to start!");
+	}
+
 }
