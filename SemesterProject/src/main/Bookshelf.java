@@ -1,13 +1,10 @@
-import java.util.Scanner;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -18,7 +15,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.text.Text;
 
 public class Bookshelf extends Application {
     private Button searchButton = new Button("Search");
@@ -71,8 +67,6 @@ public class Bookshelf extends Application {
 				"The Chronicles of Narnia", "The Earthsea Cycle", "Percy Jackson & the Olympians",
 				"The Lord of the Rings", "The Maze Runner", "The Chronicles of Prydain", "The Kane Chronicles",
 				"The Dark Tower" };
-
-		 int totalBooks = 60;
 
 	        buttonGeneration(bookTitles, gridpane, stage);
 

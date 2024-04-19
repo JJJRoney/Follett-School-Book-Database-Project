@@ -54,7 +54,7 @@ public class WhackAMoleGame extends Application {
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {
-            // Implement back button functionality here
+            SwitchScene.switchScene("Games", primaryStage);
         });
         backButton.setStyle("-fx-font-size: 18px; -fx-padding: 15px;");
         BorderPane.setAlignment(backButton, Pos.CENTER);
