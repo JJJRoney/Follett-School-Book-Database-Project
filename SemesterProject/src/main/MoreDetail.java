@@ -65,6 +65,7 @@ public class MoreDetail extends Application {
         String[] options = { "Home", "Bookshelf", "Games" };
         ComboBox<String> pageSelection = new ComboBox<String>();
         pageSelection.getItems().addAll(options);
+        pageSelection.setValue("More Details");
         pageSelection.setStyle("-fx-font-size: 24px; -fx-text-fill: #00008B;");
 
         pageSelection.setOnAction(e -> {
