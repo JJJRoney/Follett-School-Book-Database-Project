@@ -39,8 +39,9 @@ import java.util.Random;
  * This program also utilizes the SwitchScene class to facilitate
  * navigation between different scenes within the JavaFX application.
  *
- * @author [Justin]
+ * @author [Justin Ross]
  * @date [4/19/24]
+ * @class [CPS 240]
  */
 
 public class WhackAMoleGame extends Application {
