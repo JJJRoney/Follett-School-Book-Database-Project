@@ -13,7 +13,28 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The MoreDetail class is a JavaFX application serves as a platform to display detailed information
+ * about a book within a graphical user interface. It utilizes a range of JavaFX components
+ * such as labels, buttons, combo boxes, and image views to construct a visually appealing
+ * layout. The program offers functionality for users to navigate between different 
+ * sections, presenting options like "Home", "Bookshelf", and "Games" through a dropdown 
+ * menu. Upon selection, the program dynamically updates the display to reflect the chosen option.
+ * Furthermore, it demonstrates efficient event handling, where clicking on a specific image 
+ * triggers an action to open a designated URL. 
+ * Behind the scenes, the program maintains data about the book, including its title, author, 
+ * page count, genre, and available copies. This data is dynamically displayed within the 
+ * interface, providing users with comprehensive information about the selected book.
+ * It includes features to fetch book details from a database, display them, and allow the user to delete a book.
+ * Additionally, it provides functionality to switch back to the bookshelf view.
+ * 
+ * @author [Justin]
+ * @date [4/19/24]
+ * @class [CPS 240]
+ */
+
 public class MoreDetail extends Application {
+    // Instance variables for UI components and book details
     private Label titleLabel;
     private Label authorLabel;
     private Label authorNameLabel;
@@ -25,16 +46,17 @@ public class MoreDetail extends Application {
     private Label copiesAmountValueLabel;
     private Button bookshelfButton;
     private StackPane imagePanel;
-
     private String bookTitle;
     private String authorName;
     private String pageAmount;
     private String genreOfBook;
     private String copiesAmount;
-	private Stage primaryStage;
-    
+    private Stage primaryStage;
+
+    /**
+     * Default constructor initializing book details to default values.
+     */
     public MoreDetail() {
-        // Default values
         this.bookTitle = "Unknown";
         this.authorName = "Unknown Author";
         this.pageAmount = "0";
@@ -42,27 +64,37 @@ public class MoreDetail extends Application {
         this.copiesAmount = "0";
     }
 
-    
-
+    /**
+     * Constructor initializing book details based on the provided title.
+     * @param bookTitle The title of the book.
+     * @param primaryStage The primary stage of the JavaFX application.
+     */
     public MoreDetail(String bookTitle, Stage primaryStage) {
         this.bookTitle = bookTitle;
         this.primaryStage = primaryStage;
         fetchBookDetails(bookTitle);
     }
+
+    /**
+     * Fetches book details from the database based on the provided title.
+     * @param title The title of the book to fetch details for.
+     */
     private void fetchBookDetails(String title) {
-    	
+        // SQL query to fetch book details
         String sql = "SELECT Title, FirstName, LastName, Pages, Genre, Copies FROM books WHERE Title = ?";
         try (Connection conn = Connect.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, title);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
+                    // Populate book details if data is found
                     authorName = rs.getString("FirstName") + " " + rs.getString("LastName");
                     pageAmount = rs.getString("Pages");
                     genreOfBook = rs.getString("Genre");
                     copiesAmount = rs.getString("Copies");
                     System.out.println("Data loaded successfully.");
                 } else {
+                    // Set default values if no data found
                     System.out.println("No data found for title: " + title);
                     authorName = "Data not found";
                     pageAmount = "N/A";
@@ -71,6 +103,7 @@ public class MoreDetail extends Application {
                 }
             }
         } catch (SQLException e) {
+            // Handle exceptions
             System.out.println("Error fetching book details: " + e.getMessage());
             authorName = "Error fetching data";
             pageAmount = "Error";
@@ -79,13 +112,14 @@ public class MoreDetail extends Application {
         }
     }
 
-
-
-
+    /**
+     * Initializes the JavaFX application and sets up the UI components.
+     * @param primaryStage The primary stage of the JavaFX application.
+     */
     @Override
     public void start(Stage primaryStage) {
-    	
-    	
+        this.primaryStage = primaryStage;
+
         // Initialize components
         titleLabel = new Label("Book Title: " + bookTitle);
         authorLabel = new Label("Author: ");
@@ -207,6 +241,9 @@ public class MoreDetail extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Displays a confirmation dialog for deleting a book.
+     */
     private void confirmAndDeleteBook() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete this book: " + bookTitle + "?", ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
@@ -216,6 +253,9 @@ public class MoreDetail extends Application {
         });
     }
 
+    /**
+     * Deletes the currently displayed book from the database.
+     */
     private void deleteBook() {
         String sql = "DELETE FROM books WHERE Title = ?";
         try (Connection conn = Connect.connect();
@@ -233,14 +273,26 @@ public class MoreDetail extends Application {
         }
     }
 
+    /**
+     * Switches the view back to the bookshelf.
+     */
     private void switchToBookshelf() {
         Bookshelf bookshelf = new Bookshelf();
         bookshelf.start(primaryStage); // Assuming Bookshelf has a start method that can be called to initialize it
     }
+
+    /**
+     * Opens a link when the logo image is clicked.
+     * @param event The MouseEvent triggered by clicking the logo image.
+     */
     private void openLink(MouseEvent event) {
         getHostServices().showDocument("https://renaissancepsa.com/");
     }
 
+    /**
+     * The main method launching the JavaFX application.
+     * @param args The command-line arguments.
+     */
     public static void main(String[] args) {
         launch(args);
     }
