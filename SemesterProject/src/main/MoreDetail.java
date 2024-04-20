@@ -8,6 +8,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class MoreDetail extends Application {
     private Label titleLabel;
     private Label authorLabel;
@@ -26,6 +31,7 @@ public class MoreDetail extends Application {
     private String pageAmount;
     private String genreOfBook;
     private String copiesAmount;
+	private Stage primaryStage;
     
     public MoreDetail() {
         // Default values
@@ -36,15 +42,39 @@ public class MoreDetail extends Application {
         this.copiesAmount = "0";
     }
 
-    public MoreDetail(String bookTitle) {
+    
+
+    public MoreDetail(String bookTitle, Stage primaryStage) {
         this.bookTitle = bookTitle;
-        // You can set other book details based on the selected book title here.
-        // For now, I'm setting some example values.
-        this.authorName = "Unknown Author";
-        this.pageAmount = "300";
-        this.genreOfBook = "Fiction";
-        this.copiesAmount = "5";
+        this.primaryStage = primaryStage;
+        fetchBookDetails(bookTitle);
     }
+    private void fetchBookDetails(String title) {
+        try (Connection conn = Connect.connect();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT Title, FirstName, LastName, Pages, Genre, Copies FROM books WHERE Title = ?")) {
+            pstmt.setString(1, title);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                authorName = rs.getString("FirstName") + " " + rs.getString("LastName");
+                pageAmount = String.valueOf(rs.getInt("Pages"));
+                genreOfBook = rs.getString("Genre");
+                copiesAmount = String.valueOf(rs.getInt("Copies"));
+            } else {
+                authorName = "Data not found";
+                pageAmount = "N/A";
+                genreOfBook = "N/A";
+                copiesAmount = "N/A";
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching book details: " + e.getMessage());
+            authorName = "Error fetching data";
+            pageAmount = "Error";
+            genreOfBook = "Error";
+            copiesAmount = "Error";
+        }
+    }
+
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -65,6 +95,7 @@ public class MoreDetail extends Application {
         String[] options = { "Home", "Bookshelf", "Games" };
         ComboBox<String> pageSelection = new ComboBox<String>();
         pageSelection.getItems().addAll(options);
+        pageSelection.setValue("More Details");
         pageSelection.setStyle("-fx-font-size: 24px; -fx-text-fill: #00008B;");
 
         pageSelection.setOnAction(e -> {
@@ -137,13 +168,18 @@ public class MoreDetail extends Application {
                 new HBox(20, copiesAmountLabel, copiesAmountValueLabel)
         );
 
-        // Add delete button to the bottom right
+        // Add a delete button
         Button deleteButton = new Button("Delete");
-        deleteButton.setVisible(false);
+        deleteButton.setFont(new javafx.scene.text.Font("Arial", 36));
+        deleteButton.setStyle("-fx-text-fill: #FF0000;"); // Red text to highlight it's a delete button
+        deleteButton.setOnAction(e -> confirmAndDeleteBook());
+
         HBox bottomRightBox = new HBox();
         bottomRightBox.setAlignment(Pos.BOTTOM_RIGHT);
+        bottomRightBox.setPadding(new Insets(15));
         bottomRightBox.getChildren().add(deleteButton);
         centerPanel.getChildren().add(bottomRightBox);
+
 
         // Set background color to light gray for the center panel
         centerPanel.setStyle("-fx-background-color: #F0F0F0;");
@@ -163,6 +199,36 @@ public class MoreDetail extends Application {
         primaryStage.show();
     }
 
+    private void confirmAndDeleteBook() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete this book: " + bookTitle + "?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                deleteBook();
+            }
+        });
+    }
+
+    private void deleteBook() {
+        String sql = "DELETE FROM books WHERE Title = ?";
+        try (Connection conn = Connect.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, bookTitle);
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Book deleted successfully.");
+                switchToBookshelf(); // Switch back to the bookshelf view
+            } else {
+                System.out.println("No book was deleted.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error deleting book: " + e.getMessage());
+        }
+    }
+
+    private void switchToBookshelf() {
+        Bookshelf bookshelf = new Bookshelf();
+        bookshelf.start(primaryStage); // Assuming Bookshelf has a start method that can be called to initialize it
+    }
     private void openLink(MouseEvent event) {
         getHostServices().showDocument("https://renaissancepsa.com/");
     }
