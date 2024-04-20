@@ -1,3 +1,9 @@
+/*
+ * Devon Burton
+ * CPS240 final project
+ *  This is the game launch page in which all of the games are listed and the user can click on the game they want to play's respective 
+ *  image and the application will switch the scene to that game
+ *  */
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,6 +22,7 @@ import javafx.stage.Stage;
 
 public class GameLaunchPage extends Application {
 
+	//main method where everything is created and put into the right place
     @Override
     public void start(Stage primaryStage) {
         // Creating game images

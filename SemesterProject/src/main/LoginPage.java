@@ -1,3 +1,10 @@
+/*
+ * Devon Burton
+ * CPS240 final project
+ * This is the loginPage it is where teachers and admins will login with a username and password so they have additional permissions on the app 
+ * to add and remove books from they database. This increases the security of the app because students cannot put incorrect or possibly 
+ * inappropriate information into the app.
+ */
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -95,19 +102,19 @@ public class LoginPage extends Application {
 		primaryStage.setTitle("Login Form");
 		primaryStage.show();
 	}
-
+	//Since multiple buttons use the same style a set style is used for all buttons
 	private Button createStyledButton(String text) {
 		Button button = new Button(text);
 		button.setStyle("-fx-font-size: 14pt; -fx-font-weight: bold;");
 		return button;
 	}
-
+	//Since multiple labels use the same style a set style is used for all labels
 	private Label createStyledLabel(String text) {
 		Label label = new Label(text);
 		label.setStyle("-fx-font-size: 14pt; -fx-font-weight: bold;");
 		return label;
 	}
-
+	//Since multiple textFields use the same style a set style is used for all textfields
 	private TextField createStyledTextField() {
 		TextField textField = new TextField();
 		textField.setStyle("-fx-font-size: 14pt;");

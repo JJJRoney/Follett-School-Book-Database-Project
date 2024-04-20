@@ -1,3 +1,9 @@
+/*
+ * Devon Burton
+ * CPS240 final project
+ * This class is a memory game in which a 3x3 gridPane of rectangles will flash one at the user and they have to click the correct tile
+ * If done incorrectly the game ends. If done correctly an additional tile will be shown to the user and they will have to remember the longer sequence
+ */
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -87,7 +93,7 @@ public class MemoryGame extends Application {
         primaryStage.show();
         primaryStage.centerOnScreen();
     }
-
+    //reset the game to it's base state when first loaded up
     private void startGame() {
         sequence.clear();
         currentLevel = 1;
@@ -100,7 +106,7 @@ public class MemoryGame extends Application {
     private void restartGame() {
         startGame();
     }
-
+    //adds the next square to the sequence and flashes the new tile
     private void showSequence() {
         playerTurn = false;
         sequence.clear();
@@ -115,7 +121,7 @@ public class MemoryGame extends Application {
         // Flash each tile sequentially
         flashSequence(0);
     }
-
+    //called by show sequence it flashes the new tile
     private void flashSequence(int index) {
         if (index < sequence.size()) {
             int sequenceIndex = sequence.get(index);
@@ -129,7 +135,7 @@ public class MemoryGame extends Application {
             playerTurn = true;
         }
     }
-
+    //logic check if the user has passes level 20 they win else go to next level
     private void nextLevel() {
         if (currentLevel > MAX_LEVEL) {
             Alert alert = new Alert(AlertType.INFORMATION);
@@ -149,7 +155,7 @@ public class MemoryGame extends Application {
         sequence.add(x * GRID_SIZE + y);
         flashTile(x, y, 0, () -> playerTurn = true); // No delay for the new tile
     }
-
+    //Flashes a tile on a new thread 
     private void flashTile(int x, int y, int delay, Runnable callback) {
         Rectangle tile = tiles[x][y];
         new Thread(() -> {
@@ -173,7 +179,7 @@ public class MemoryGame extends Application {
             });
         }).start();
     }
-
+    //whenever a tile is clicked checks if it was the correct one
     private void handleTileClick(int x, int y) {
         if (!playerTurn) return; // Ignore clicks when it's not player's turn
 
