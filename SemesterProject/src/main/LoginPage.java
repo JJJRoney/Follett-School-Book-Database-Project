@@ -1,7 +1,6 @@
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -12,9 +11,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class LoginPage extends Application {
 
@@ -26,7 +29,7 @@ public class LoginPage extends Application {
 		ComboBox<String> pageSelection = new ComboBox<String>();
 		pageSelection.getItems().addAll(options);
 		pageSelection.setValue("Login");
-		pageSelection.setStyle("-fx-font-size: 28px; -fx-text-fill: #00008B;");
+		pageSelection.setStyle("-fx-font-size: 16px; -fx-text-fill: #00008B;");
 
 		pageSelection.setOnAction(e -> {
 			String selectedOption = pageSelection.getValue();
@@ -39,22 +42,22 @@ public class LoginPage extends Application {
 		ImageView imageView = null;
 		imageView = new ImageView(logo);
 		imageView.setPickOnBounds(true);
-		imageView.setFitWidth(400); // Set desired width
-		imageView.setFitHeight(200); // Set desired height
+		imageView.setFitWidth(200); // Set desired width
+		imageView.setFitHeight(100); // Set desired height
 		imageView.setOnMouseClicked(e -> {
 			getHostServices().showDocument("https://renaissancepsa.com/");
 		});
 
 		// Create centered label for login
-		// Label loginLabel = createStyledLabel("Login");
+		Label loginLabel = createStyledLabel("Login");
 
 		// Create a VBox to stack the image and the label vertically
-		// VBox vbox = new VBox(10, imageView);
-		// vbox.setAlignment(Pos.TOP_CENTER);
+		VBox vbox = new VBox(10, imageView, loginLabel);
+		vbox.setAlignment(Pos.TOP_CENTER);
 
 		// Create HBox
-		// HBox hbox = new HBox(10, pageSelection, vbox);
-		// hbox.setAlignment(Pos.BOTTOM_CENTER);
+		HBox hbox = new HBox(10, pageSelection, vbox);
+		hbox.setAlignment(Pos.BOTTOM_CENTER);
 
 		// Create labels and text fields for username and password
 		Label usernameLabel = createStyledLabel("Username:");
@@ -66,6 +69,10 @@ public class LoginPage extends Application {
 		// Create login button
 		Button loginButton = createStyledButton("Login");
 
+		// Create layout
+		BorderPane root = new BorderPane();
+		root.setPadding(new Insets(10));
+
 		// Center form
 		GridPane centerForm = new GridPane();
 		centerForm.addRow(0, usernameLabel, usernameField);
@@ -74,40 +81,30 @@ public class LoginPage extends Application {
 		centerForm.setHgap(10);
 		centerForm.setAlignment(Pos.CENTER);
 
-		// Create layout
-		BorderPane root = new BorderPane();
-		root.setPadding(new Insets(10));
-		root.setTop(imageView);
-		BorderPane.setAlignment(imageView, Pos.TOP_CENTER);
+		StackPane topPane = new StackPane();
+		topPane.getChildren().addAll(hbox);
+		root.setTop(topPane);
+		BorderPane.setMargin(topPane, new Insets(0,0,0,-20));
 		root.setCenter(centerForm);
-		BorderPane.setMargin(centerForm, new Insets(0,250,0,0));
 		root.setBottom(loginButton);
 		BorderPane.setAlignment(loginButton, Pos.BOTTOM_CENTER);
-		root.setLeft(pageSelection);
-		BorderPane.setMargin(pageSelection, new Insets(0, 0, 0, 20));
-
-		Screen screen = Screen.getPrimary();
-		Rectangle2D bounds = screen.getVisualBounds();
 
 		// Create scene and set it to the stage
-		Scene scene = new Scene(root);
+		Scene scene = new Scene(root, 400, 300);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Login Form");
-		primaryStage.setWidth(bounds.getWidth());
-		primaryStage.setHeight(bounds.getHeight());
 		primaryStage.show();
-		primaryStage.centerOnScreen();
 	}
 
 	private Button createStyledButton(String text) {
 		Button button = new Button(text);
-		button.setStyle("-fx-font-size: 28pt; -fx-font-weight: bold;");
+		button.setStyle("-fx-font-size: 14pt; -fx-font-weight: bold;");
 		return button;
 	}
 
 	private Label createStyledLabel(String text) {
 		Label label = new Label(text);
-		label.setStyle("-fx-font-size: 28pt; -fx-font-weight: bold;");
+		label.setStyle("-fx-font-size: 14pt; -fx-font-weight: bold;");
 		return label;
 	}
 
