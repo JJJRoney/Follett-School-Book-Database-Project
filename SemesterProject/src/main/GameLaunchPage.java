@@ -1,16 +1,17 @@
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class GameLaunchPage extends Application {
@@ -25,44 +26,62 @@ public class GameLaunchPage extends Application {
         game1ImageView.setOnMouseClicked(event -> {
             // Handle click event for game 1
             System.out.println("Game 1 clicked");
-            // Add code to navigate to game 1 scene
+            SwitchScene.switchScene("Snake", primaryStage);
         });
 
-        Image game2Image = new Image("https://renaissancepsa.com/wp-content/uploads/2017/08/rams_logo.png");
+        Image game2Image = new Image("https://www.cokogames.com/wp-content/uploads/2022/11/sequence-memory-game.jpg");
         ImageView game2ImageView = new ImageView(game2Image);
+        game2ImageView.setPickOnBounds(true); 
         game2ImageView.setFitWidth(200);
         game2ImageView.setFitHeight(200);
         game2ImageView.setOnMouseClicked(event -> {
             // Handle click event for game 2
             System.out.println("Game 2 clicked");
-            // Add code to navigate to game 2 scene
+            SwitchScene.switchScene("Memory", primaryStage);
         });
 
-        Image game3Image = new Image("https://renaissancepsa.com/wp-content/uploads/2017/08/rams_logo.png");
+        Image game3Image = new Image("https://play-lh.googleusercontent.com/muD11u7sK-i75V-zq7FAapJ5gOUjRt2CXxssGwz-FsjkjCVCHcrMquIUMroLPVEOAy0");
         ImageView game3ImageView = new ImageView(game3Image);
+        game3ImageView.setPickOnBounds(true); 
         game3ImageView.setFitWidth(200);
         game3ImageView.setFitHeight(200);
         game3ImageView.setOnMouseClicked(event -> {
             // Handle click event for game 3
             System.out.println("Game 3 clicked");
-            // Add code to navigate to game 3 scene
+            SwitchScene.switchScene("Brick Breaker", primaryStage);
         });
 
-        Image game4Image = new Image("https://renaissancepsa.com/wp-content/uploads/2017/08/rams_logo.png");
+        Image game4Image = new Image("https://media.istockphoto.com/id/1153033854/vector/a-game-to-hit-the-mole.jpg?s=612x612&w=0&k=20&c=Zugmk3xO6JASmNN4sNwpaekrstBXjUA2fdIAJRi3v5Y=");
         ImageView game4ImageView = new ImageView(game4Image);
+        game4ImageView.setPickOnBounds(true); 
         game4ImageView.setFitWidth(200);
         game4ImageView.setFitHeight(200);
         game4ImageView.setOnMouseClicked(event -> {
             // Handle click event for game 4
             System.out.println("Game 4 clicked");
-            // Add code to navigate to game 4 scene
+            SwitchScene.switchScene("WhackAMole", primaryStage);
         });
+        
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
 
+        String[] options = { "Home", "Bookshelf", "Games" };
+        ComboBox<String> pageSelection = new ComboBox<String>();
+        pageSelection.getItems().addAll(options);
+        pageSelection.setValue(options[2]);
+        pageSelection.setStyle("-fx-font-size: 24px; -fx-text-fill: #00008B;");
+
+        pageSelection.setOnAction(e -> {
+            String selectedOption = pageSelection.getValue();
+            System.out.println("Selected Option: " + selectedOption);
+            SwitchScene.switchScene(selectedOption, primaryStage);
+        });
+        
         // Creating game titles
-        Label game1Label = new Label("Game 1");
-        Label game2Label = new Label("Game 2");
-        Label game3Label = new Label("Game 3");
-        Label game4Label = new Label("Game 4");
+        Label game1Label = new Label("Snake");
+        Label game2Label = new Label("Memory Game");
+        Label game3Label = new Label("Brick Breaker");
+        Label game4Label = new Label("Wack-A-Mole");
 
         // Centering label text
         game1Label.setAlignment(Pos.CENTER);
@@ -91,31 +110,18 @@ public class GameLaunchPage extends Application {
         game4Box.getChildren().addAll(game4ImageView, game4Label);
         game4Box.setAlignment(Pos.CENTER); // Center alignment for VBox
 
-        FlowPane imagePane = new FlowPane(20, 20);
-        imagePane.getChildren().addAll(game1Box, game2Box, game3Box, game4Box);
-        imagePane.setAlignment(Pos.CENTER);
+        FlowPane gameImagePane = new FlowPane(20, 20);
+        gameImagePane.getChildren().addAll(game1Box, game2Box, game3Box, game4Box);
+        gameImagePane.setAlignment(Pos.CENTER);
 
-        vbox.getChildren().addAll(imagePane);
-        
-        Button homeButton = createStyledButton("Home");
-        Button collectionsButton = createStyledButton("Collections");
-
-        // Lock buttons to the top left and top right respectively
-        VBox leftMenu = new VBox(10, homeButton);
-        VBox rightMenu = new VBox(10, collectionsButton);
-        leftMenu.setAlignment(Pos.TOP_LEFT);
-        rightMenu.setAlignment(Pos.TOP_RIGHT);
-
-        // Set padding for the right menu to create a fixed distance from the top right corner
-        leftMenu.setPadding(new Insets(10, 10, 10, 10));
-        rightMenu.setPadding(new Insets(10, 10, 10, 10));
+        vbox.getChildren().addAll(gameImagePane);
 
         // Create an ImageView with the specified image file
         Image logo = new Image("https://renaissancepsa.com/wp-content/uploads/2017/08/rams_logo.png");
         ImageView imageView = new ImageView(logo);
         imageView.setPickOnBounds(true);
-        imageView.setFitWidth(200); // Set desired width
-        imageView.setFitHeight(100); // Set desired height
+        imageView.setFitWidth(400); // Set desired width
+        imageView.setFitHeight(200); // Set desired height
         imageView.setOnMouseClicked(e -> {
             getHostServices().showDocument("https://renaissancepsa.com/");
         });
@@ -127,26 +133,33 @@ public class GameLaunchPage extends Application {
         
         GridPane topGridPane = new GridPane();
         topGridPane.setHgap(10);
-        topGridPane.add(leftMenu, 0, 0);
         topGridPane.add(logoBox, 1, 0);
-        topGridPane.add(rightMenu, 2, 0);
         topGridPane.setAlignment(Pos.CENTER);
 
         // Setting up the scene
         BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(vbox);
-        borderPane.setTop(topGridPane);
-        Scene scene = new Scene(borderPane, 800, 600);
-
+        borderPane.setTop(imageView);
+        BorderPane.setAlignment(imageView, Pos.TOP_CENTER);
+        borderPane.setCenter(gameImagePane);
+        BorderPane.setAlignment(gameImagePane, Pos.CENTER);
+        BorderPane.setMargin(gameImagePane, new Insets(0,250,0,0));
+        borderPane.setLeft(pageSelection);
+        BorderPane.setMargin(pageSelection, new Insets(0,0,0,20));
+        
+        Scene scene = new Scene(borderPane);
         primaryStage.setTitle("Game Home Page");
         primaryStage.setScene(scene);
+        primaryStage.setWidth(bounds.getWidth());
+        primaryStage.setHeight(bounds.getHeight());
         primaryStage.show();
+        primaryStage.centerOnScreen();
     }
 
     public static void main(String[] args) {
         launch(args);
     }
     
+    /*
     private Button createStyledButton(String text) {
         Button button = new Button(text);
         button.setStyle("-fx-font-size: 14pt; -fx-font-weight: bold;");
@@ -164,4 +177,5 @@ public class GameLaunchPage extends Application {
         textField.setStyle("-fx-font-size: 14pt;");
         return textField;
     }
+    */
 }

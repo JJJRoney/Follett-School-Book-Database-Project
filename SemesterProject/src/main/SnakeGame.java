@@ -6,6 +6,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class SnakeGame extends Application {
@@ -35,6 +37,7 @@ public class SnakeGame extends Application {
     static Random rand = new Random();
     private static Button restartButton;
     private static Button startGame;
+    private static Button returnToMenu;
 
     public enum Dir {
         left, right, up, down
@@ -61,6 +64,21 @@ public class SnakeGame extends Application {
 
             StackPane stackPane = new StackPane();
             stackPane.getChildren().add(c);
+            
+         // Get primary screen & bounds of the screen for size of scene
+    		Screen screen = Screen.getPrimary();
+    		Rectangle2D bounds = screen.getVisualBounds();
+            
+            returnToMenu = new Button("Return to Menu");
+            returnToMenu.setFont(Font.font("Arial Black", FontWeight.BOLD, 18));
+            returnToMenu.setOnAction(e -> {
+            	SwitchScene.switchScene("Games", primaryStage);
+            });
+            returnToMenu.setVisible(false);
+            returnToMenu.setPrefSize(200, 50);
+            StackPane.setAlignment(returnToMenu, Pos.TOP_CENTER); // Set button position
+            StackPane.setMargin(returnToMenu, new Insets(20, 0, 0, 0)); // Set margin
+            stackPane.getChildren().add(returnToMenu);
 
             restartButton = new Button("Restart Game");
             restartButton.setFont(Font.font("Arial Black", FontWeight.BOLD, 18));
@@ -100,6 +118,8 @@ public class SnakeGame extends Application {
             StackPane.setMargin(startGame, new Insets(0, 0, 20, 0)); // Set margin
             stackPane.getChildren().add(startGame);
 
+            // Add a return to menu button
+            
             new AnimationTimer() {
                 long lastTick = 0;
 
@@ -159,6 +179,7 @@ public class SnakeGame extends Application {
             gc.setFont(new Font("", 50));
             gc.fillText("GAME OVER", 100, 250);
             restartButton.setVisible(true); // Set the restart button to visible
+            returnToMenu.setVisible(true);
             return;
         }
 

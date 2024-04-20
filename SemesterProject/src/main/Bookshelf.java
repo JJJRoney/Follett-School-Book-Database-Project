@@ -267,4 +267,3 @@ public class Bookshelf extends Application {
         launch(args);
     }
 }
-
