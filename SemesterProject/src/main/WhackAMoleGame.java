@@ -10,13 +10,38 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+/**
+ * The WhackAMoleGame class implements a simple JavaFX-based Whack-a-Mole game.
+ * The player's objective is to click on moles as they appear within a grid
+ * to earn points within a limited time frame.
+ *
+ * The game features a grid layout where moles randomly appear and disappear.
+ * The player can start the game by clicking the "Start" button and earn points
+ * by clicking on the visible moles. The game ends after a fixed duration,
+ * and the player's score is displayed. The player can restart the game by
+ * clicking the "Try Again" button.
+ *
+ * This game provides an engaging user experience and demonstrates the
+ * usage of JavaFX features such as animations, event handling, and layouts.
+ *
+ * The game parameters such as grid size, mole radius, spawn rate, game duration,
+ * and mole display time can be adjusted as constants within the program.
+ * Additionally, the number of moles spawned simultaneously can be modified
+ * in the spawnMoles method.
+ *
+ * This program also utilizes the SwitchScene class to facilitate
+ * navigation between different scenes within the JavaFX application.
+ *
+ * @author [Justin]
+ * @date [4/19/24]
+ */
 
 public class WhackAMoleGame extends Application {
 
@@ -38,6 +63,21 @@ public class WhackAMoleGame extends Application {
     private Timeline updateTimeLeftTimeline; // Timeline to update time left label
     private boolean gameRunning;
 
+    /**
+     * The main entry point for the JavaFX application.
+     * Initializes and launches the Whack-a-Mole game.
+     *
+     * @param args The command-line arguments.
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    /**
+     * Starts the JavaFX application by initializing the game UI.
+     *
+     * @param primaryStage The primary stage for the JavaFX application.
+     */
     @Override
     public void start(Stage primaryStage) {
         // Create the root layout
@@ -99,7 +139,11 @@ public class WhackAMoleGame extends Application {
         primaryStage.show();
     }
 
-    // Method to create the grid pane for moles
+    /**
+     * Creates the grid pane for moles with the specified grid size.
+     *
+     * @return The GridPane containing the moles.
+     */
     private GridPane createGridPane() {
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
@@ -120,7 +164,10 @@ public class WhackAMoleGame extends Application {
         return gridPane;
     }
 
-    // Method to start the game
+    /**
+     * Starts the game by initializing game parameters and timelines.
+     * Allows the player to interact with the game by clicking moles.
+     */
     private void startGame() {
         if (!gameRunning) {
             gameRunning = true;
@@ -159,7 +206,9 @@ public class WhackAMoleGame extends Application {
         }
     }
 
-    // Method to end the game
+    /**
+     * Ends the game and stops all game-related timelines.
+     */
     private void endGame() {
         gameRunning = false;
         startButton.setText("Try Again");
@@ -167,7 +216,11 @@ public class WhackAMoleGame extends Application {
         gameTimeline.stop();
     }
 
-    // Method to spawn moles
+    /**
+     * Spawns moles at random locations within the grid.
+     * Moles are displayed for a fixed duration before disappearing.
+     * Players earn points by clicking on visible moles.
+     */
     private void spawnMoles() {
         Random random = new Random();
         List<Circle> moles = new ArrayList<>();
@@ -202,9 +255,5 @@ public class WhackAMoleGame extends Application {
                 }
             });
         }
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
