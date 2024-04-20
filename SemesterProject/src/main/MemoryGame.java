@@ -79,7 +79,7 @@ public class MemoryGame extends Application {
 
         returnToMenuButton = new Button("Return to Menu");
         returnToMenuButton.setOnAction(event -> {
-            // Implement your logic to return to the menu
+        	SwitchScene.switchScene("Games", primaryStage);
         });
 
         BorderPane.setAlignment(startRestartButton, Pos.BOTTOM_CENTER);
