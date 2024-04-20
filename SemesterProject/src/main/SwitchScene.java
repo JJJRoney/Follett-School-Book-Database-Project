@@ -1,6 +1,7 @@
 
 import javafx.stage.Stage;
-import sample.Main;
+//import sample.Main;
+//import sample.Main;
 
 public class SwitchScene {
 	
@@ -36,7 +37,7 @@ public class SwitchScene {
 				memoryGame.start(primaryStage);
 				break;
 			case "Brick Breaker":
-				Main brickBreaker = new Main();
+				BrickBreaker brickBreaker = new BrickBreaker();
 			try {
 				brickBreaker.start(primaryStage);
 			} catch (Exception e) {
