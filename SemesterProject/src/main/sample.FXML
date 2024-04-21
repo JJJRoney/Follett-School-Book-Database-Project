@@ -3,7 +3,7 @@
      The FXML file links to the Controller class which handles game logic and user interactions. -->
 
 
-<?xml version="1.0" encoding="UTF-8"?>
+
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
