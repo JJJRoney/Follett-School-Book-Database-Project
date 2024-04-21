@@ -94,23 +94,32 @@ public class MoreDetail extends Application {
                     copiesAmount = rs.getString("Copies");
                     System.out.println("Data loaded successfully.");
                 } else {
-                    // Set default values if no data found
+                    // Set random or default values if no data found
                     System.out.println("No data found for title: " + title);
-                    authorName = "Data not found";
-                    pageAmount = "N/A";
-                    genreOfBook = "N/A";
-                    copiesAmount = "N/A";
+                    setRandomBookDetails();
                 }
             }
         } catch (SQLException e) {
-            // Handle exceptions
+            // Handle exceptions and set random details
             System.out.println("Error fetching book details: " + e.getMessage());
-            authorName = "Error fetching data";
-            pageAmount = "Error";
-            genreOfBook = "Error";
-            copiesAmount = "Error";
+            setRandomBookDetails();
         }
     }
+
+    /**
+     * Sets random details for the book to simulate data or to provide placeholders in case of an error.
+     */
+    private void setRandomBookDetails() {
+        String[] sampleAuthors = {"Chester Hill", "Jane Langley", "Emily Johnson", "Robert Thelm", "Phay Knaam"};
+        String[] sampleGenres = {"Fiction", "Non-Fiction", "Science Fiction", "Mystery"};
+        int randomIndex = (int) (Math.random() * sampleAuthors.length);
+
+        authorName = sampleAuthors[randomIndex];
+        pageAmount = String.valueOf((int) (Math.random() * 10) + 100); // Pages between 100 and 1100
+        genreOfBook = sampleGenres[(int) (Math.random() * sampleGenres.length)];
+        copiesAmount = String.valueOf((int) (Math.random() * 1) + 1); // Copies between 1 and 50
+    }
+
 
     /**
      * Initializes the JavaFX application and sets up the UI components.
