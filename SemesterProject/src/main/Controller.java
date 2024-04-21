@@ -145,19 +145,38 @@ public class Controller implements Initializable {
 	}
 
 	public void checkCollisionScene(Node node) {
-		Bounds bounds = node.getBoundsInLocal();
-		boolean rightBorder = circle.getLayoutX() >= (bounds.getMaxX() - circle.getRadius());
-		boolean leftBorder = circle.getLayoutX() <= (bounds.getMinX() + circle.getRadius());
-		boolean bottomBorder = circle.getLayoutY() >= (bounds.getMaxY() - circle.getRadius());
-		boolean topBorder = circle.getLayoutY() <= (bounds.getMinY() + circle.getRadius());
+	    Bounds bounds = node.getBoundsInLocal();
+	    double maxX = bounds.getMaxX();
+	    double minX = bounds.getMinX();
+	    double maxY = bounds.getMaxY();
+	    double minY = bounds.getMinY();
 
-		if (rightBorder || leftBorder) {
-			deltaX *= -1;
-		}
-		if (bottomBorder || topBorder) {
-			deltaY *= -1;
-		}
+	    // Right boundary
+	    if (circle.getLayoutX() >= (maxX - circle.getRadius())) {
+	        circle.setLayoutX(maxX - circle.getRadius());
+	        deltaX *= -1;
+	    }
+
+	    // Left boundary
+	    if (circle.getLayoutX() <= (minX + circle.getRadius())) {
+	        circle.setLayoutX(minX + circle.getRadius());
+	        deltaX *= -1;
+	    }
+
+	    // Top boundary
+	    if (circle.getLayoutY() <= (minY + circle.getRadius())) {
+	        circle.setLayoutY(minY + circle.getRadius());
+	        deltaY *= -1;
+	    }
+
+	    // Bottom boundary (very bottom of the window)
+	    if (circle.getLayoutY() >= (maxY - circle.getRadius())) {
+	        // Instead of bouncing the ball, you might want to handle game over or similar logic here
+	        gameOver();  // Game over if the ball hits the bottom of the scene
+	    }
 	}
+
+
 
 	public boolean checkCollisionBrick(Rectangle brick) {
 
@@ -183,44 +202,40 @@ public class Controller implements Initializable {
 	}
 
 	public void createBricks() {
-		double width = 560;
-		double height = 200;
-		String[] colors = { "RED", "BLUE", "ORGANGE", "GREEN" };
-		int spaceCheck = 1;
-		int h = 0;
-		for (double i = height; i > 0; i = i - 50) {
-			for (double j = width; j > 0; j = j - 25) {
-				if (spaceCheck % 2 == 0) {
-					Rectangle rectangle = new Rectangle(j, i, 30, 30);
-					rectangle.setFill(Color.RED);
-					h++;
-					scene.getChildren().add(rectangle);
-					bricks.add(rectangle);
-					if (h == 4) {
-						h = 0;
-					}
-				}
-				spaceCheck++;
+	    double width = 1250;   // Total width where bricks will be created
+	    double height = 200;  // Total height where bricks will be created
+	    String[] colors = { "RED", "BLUE", "ORANGE", "GREEN" };  // Corrected typo in "ORANGE"
+	    int rowCounter = 0;   // Counter to keep track of the current row
 
-			}
-		}
+	    // Iterate over each row
+	    for (double y = 0; y < height; y += 50) {
+	        // Select color from the array based on the current row
+	        Color fill = Color.valueOf(colors[rowCounter % colors.length]);
+
+	        // Iterate over each column in the current row
+	        for (double x = 0; x < width; x += 55) {  // Adjusted space between bricks
+	            Rectangle rectangle = new Rectangle(x, y, 50, 30);  // Adjusted brick size for uniformity
+	            rectangle.setFill(fill);
+	            scene.getChildren().add(rectangle);
+	            bricks.add(rectangle);
+	        }
+
+	        // Increment the row counter after finishing each row
+	        rowCounter++;
+	    }
 	}
+
 
 	public void movePaddle() {
-		Bounds bounds = scene.localToScreen(scene.getBoundsInLocal());
-		double sceneXPos = bounds.getMinX();
+	    double mouseX = robot.getMouseX();
+	    double newPaddleX = mouseX - scene.localToScene(scene.getBoundsInLocal()).getMinX() - paddle.getWidth() / 2;
 
-		double xPos = robot.getMouseX();
-		double paddleWidth = paddle.getWidth();
+	    newPaddleX = Math.max(newPaddleX, 0); // Ensure paddle doesn't move beyond the left edge
+	    newPaddleX = Math.min(newPaddleX, scene.getWidth() - paddle.getWidth()); // Ensure paddle doesn't move beyond the right edge
 
-		if (xPos >= sceneXPos + (paddleWidth / 2) && xPos <= (sceneXPos + scene.getWidth()) - (paddleWidth / 2)) {
-			paddle.setLayoutX(xPos - sceneXPos - (paddleWidth / 2));
-		} else if (xPos < sceneXPos + (paddleWidth / 2)) {
-			paddle.setLayoutX(0);
-		} else if (xPos > (sceneXPos + scene.getWidth()) - (paddleWidth / 2)) {
-			paddle.setLayoutX(scene.getWidth() - paddleWidth);
-		}
+	    paddle.setLayoutX(newPaddleX);
 	}
+
 
 	public void checkCollisionPaddle(Rectangle paddle) {
 
@@ -285,4 +300,3 @@ public class Controller implements Initializable {
 	}
 
 }
-
